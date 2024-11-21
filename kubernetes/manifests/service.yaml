@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-urlshortener
+  namespace: default
+spec:
+  selector:
+    app: go-urlshortener
+  type: NodePort
+  sessionAffinity: None
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  ports:
+  - name: go-urlshortener
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 30000

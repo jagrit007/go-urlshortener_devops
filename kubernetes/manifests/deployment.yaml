@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  go-urlshortener
+  namespace: default
+  labels:
+    app:  go-urlshortener
+spec:
+  selector:
+    matchLabels:
+      app: go-urlshortener
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  go-urlshortener
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name:  go-urlshortener
+        image:  gitea.jagrit.dev/jagrit007/go-urlshortener:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: go-urlshortener-config
+              key: BASE_URL
+        ports:
+        - containerPort:  8080
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Kolkata
+      restartPolicy: Always
