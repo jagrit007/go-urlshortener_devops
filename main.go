@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log" // Import the log package
+	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 
 var (
 	urls      = make(map[string]string) // Map to store URL mapping
-	baseURL   = "http://localhost:8080" // Base URL for short links
+	baseURL   string                    // Base URL for short links
 	urlMutex  sync.Mutex                // Mutex to handle concurrency
 	urlLength = 6                       // Length of the generated short URL
 )
@@ -88,6 +89,15 @@ func serveFrontend(r *gin.Engine) {
 }
 
 func main() {
+	// Fetch the baseURL from the environment variable or use a default
+	baseURL = os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+
+	// Log the baseURL for debugging purposes
+	log.Printf("Using baseURL: %s", baseURL)
+
 	// Create the gin router
 	r := gin.Default()
 
