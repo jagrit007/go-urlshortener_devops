@@ -1,4 +1,4 @@
-FROM golang:1.23 as BUILDER
+FROM golang:1.23 AS builder
 
 WORKDIR /app
 COPY go.mod ./
@@ -10,8 +10,8 @@ RUN go build -o prod_app .
 
 FROM gcr.io/distroless/base
 
-COPY --from=BUILDER /app/prod_app .
-COPY --from=BUILDER /app/static ./static
+COPY --from=builder /app/prod_app .
+COPY --from=builder /app/static ./static
 
 EXPOSE 8080
 
